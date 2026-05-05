@@ -124,7 +124,11 @@ function hookLibFunctions(lib) {
 
     send('message_info', new TextEncoder().encode(message));
 
-    Module.enumerateExportsSync(name).forEach(function (module) {
+    const entries = (parseInt(Frida.version) >= 17 && mod.enumerateSymbols) 
+      ? mod.enumerateSymbols() 
+      : Module.enumerateExportsSync(name);
+
+    entries.forEach(function (module) {
         try {
             let hookedModule;
             if (module.name.includes('UsePrivacyMode')) {
